@@ -1,2 +1,13 @@
-@npm install
-@npx vite //to start the project
+## Installation
+
+Install the dependencies
+
+```bash
+npm install
+```
+start the project
+
+```bash
+npx vite
+```
+
