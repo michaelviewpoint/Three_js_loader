@@ -99,30 +99,36 @@
       const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
 
       const fov = 45;
-      const aspect = 2; // the canvas default
+      const aspect = 1.6667; // the canvas default
       const near = 0.1;
-      const far = 100;
+      const far = 2000;
       const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      camera.position.set(0, 20, 40);
+      camera.position.set(200, 0, 0);
 
       const controls = new OrbitControls(camera, canvas);
-      controls.target.set(0, 5, 0);
+      controls.minPolarAngle = Math.PI / 2; // restrict to horizontal axis
+      controls.maxPolarAngle = Math.PI / 2; // restrict to horizontal axis
+      controls.target.set(-10, 50, 0);
       controls.update();
 
       const scene = new THREE.Scene();
       scene.background = new THREE.Color("white");
 
+      // const ambLight = new AmbientLight(0xffffff, 0.6);
       function addLight(...pos) {
         const color = 0xffffff;
         const intensity = 2.5;
         const light = new THREE.DirectionalLight(color, intensity);
+        const ambLight = new THREE.AmbientLight(color, intensity);
         light.position.set(...pos);
-        scene.add(light);
-        scene.add(light.target);
+        scene.add(ambLight);
+        // scene.add(light);
+        // scene.add(light.target);
       }
 
       addLight(5, 5, 2);
-      addLight(-5, 5, 5);
+      // addLight(-5, 5, 5);
+      // scene.add(...ambLight);
 
       const manager = new THREE.LoadingManager();
       manager.onLoad = init;
@@ -135,29 +141,32 @@
       };
 
       const models = {
-        pig: {
-          url: "https://threejs.org/manual/examples/resources/models/animals/Pig.gltf",
-        },
-        cow: {
-          url: "https://threejs.org/manual/examples/resources/models/animals/Cow.gltf",
-        },
-        llama: {
-          url: "https://threejs.org/manual/examples/resources/models/animals/Llama.gltf",
-        },
-        pug: {
-          url: "https://threejs.org/manual/examples/resources/models/animals/Pug.gltf",
-        },
-        sheep: {
-          url: "https://threejs.org/manual/examples/resources/models/animals/Sheep.gltf",
-        },
-        zebra: {
-          url: "https://threejs.org/manual/examples/resources/models/animals/Zebra.gltf",
-        },
-        horse: {
-          url: "https://threejs.org/manual/examples/resources/models/animals/Horse.gltf",
-        },
-        knight: {
-          url: "https://threejs.org/manual/examples/resources/models/knight/KnightCharacter.gltf",
+        // pig: {
+        //   url: "https://threejs.org/manual/examples/resources/models/animals/Pig.gltf",
+        // },
+        // cow: {
+        //   url: "https://threejs.org/manual/examples/resources/models/animals/Cow.gltf",
+        // },
+        // llama: {
+        //   url: "https://threejs.org/manual/examples/resources/models/animals/Llama.gltf",
+        // },
+        // pug: {
+        //   url: "https://threejs.org/manual/examples/resources/models/animals/Pug.gltf",
+        // },
+        // sheep: {
+        //   url: "https://threejs.org/manual/examples/resources/models/animals/Sheep.gltf",
+        // },
+        // zebra: {
+        //   url: "https://threejs.org/manual/examples/resources/models/animals/Zebra.gltf",
+        // },
+        // horse: {
+        //   url: "https://threejs.org/manual/examples/resources/models/animals/Horse.gltf",
+        // },
+        // knight: {
+        //   url: "https://threejs.org/manual/examples/resources/models/knight/KnightCharacter.gltf",
+        // },
+        Cubes: {
+          url: "/Assets/GLTF Model/Cubes model.gltf",
         },
       };
       {
@@ -200,6 +209,21 @@
           const action = mixer.clipAction(firstClip);
           action.play();
           mixers.push(mixer);
+          clonedScene.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              const Boxes = child;
+              const BoxesM = child.material;
+              if (BoxesM.name === "Boxes_Red") {
+                BoxesM.transparent = true;
+                BoxesM.opacity = 0.0;
+              } else {
+                BoxesM.transparent = true;
+                BoxesM.opacity = 0.5;
+              }
+              console.log(BoxesM.name);
+              console.log(Boxes.id);
+            }
+          });
         });
       }
 
